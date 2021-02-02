@@ -75,9 +75,9 @@ class StoryList {
 		// UNIMPLEMENTED: complete this function!
 
 		const { token } = currentUser;
-		const { title, author, url } = newStory.story;
+		const { title, author, url } = newStory;
 
-		const response = await axios({
+		const story = await axios({
 			url: `${BASE_URL}/stories`,
 			method: 'POST',
 			data: {
@@ -90,7 +90,7 @@ class StoryList {
 			}
 		});
 
-		return new Story(response);
+		return new Story(story);
 
 		// {
 		//   "token": "YOUR_TOKEN_HERE",
