@@ -74,7 +74,7 @@ class StoryList {
 	async addStory(currentUser, newStory) {
 		// UNIMPLEMENTED: complete this function!
 
-		const { token } = currentUser;
+		const { loginToken: token } = currentUser;
 		const { title, author, url } = newStory;
 
 		const story = await axios({
@@ -91,15 +91,6 @@ class StoryList {
 		});
 
 		return new Story(story);
-
-		// {
-		//   "token": "YOUR_TOKEN_HERE",
-		//   "story": {
-		//     "author": "Matt Lane",
-		//     "title": "The best story ever",
-		//     "url": "http://google.com"
-		//   }
-		// }
 	}
 }
 
@@ -139,6 +130,8 @@ class User {
 			method: 'POST',
 			data: { user: { username, password, name } }
 		});
+
+		let { user } = response.data;
 
 		return new User(
 			{
