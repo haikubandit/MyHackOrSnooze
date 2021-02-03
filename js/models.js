@@ -90,7 +90,7 @@ class StoryList {
 			}
 		});
 
-		return new Story(story);
+		return new Story(story.data.story);
 	}
 }
 
@@ -201,4 +201,8 @@ class User {
 			return null;
 		}
 	}
+
+	/** Add user favorite   */
+
+	async addFavorite(story) {}
 }

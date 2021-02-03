@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 // This is the global list of the stories, an instance of StoryList
 let storyList;
@@ -6,10 +6,10 @@ let storyList;
 /** Get and show stories when site first loads. */
 
 async function getAndShowStoriesOnStart() {
-  storyList = await StoryList.getStories();
-  $storiesLoadingMsg.remove();
+	storyList = await StoryList.getStories();
+	$storiesLoadingMsg.remove();
 
-  putStoriesOnPage();
+	putStoriesOnPage();
 }
 
 /**
@@ -20,10 +20,10 @@ async function getAndShowStoriesOnStart() {
  */
 
 function generateStoryMarkup(story) {
-  // console.debug("generateStoryMarkup", story);
+	// console.debug("generateStoryMarkup", story);
 
-  const hostName = story.getHostName();
-  return $(`
+	const hostName = story.getHostName();
+	return $(`
       <li id="${story.storyId}">
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
@@ -38,15 +38,44 @@ function generateStoryMarkup(story) {
 /** Gets list of stories from server, generates their HTML, and puts on page. */
 
 function putStoriesOnPage() {
-  console.debug("putStoriesOnPage");
+	console.debug('putStoriesOnPage');
 
-  $allStoriesList.empty();
+	$allStoriesList.empty();
 
-  // loop through all of our stories and generate HTML for them
-  for (let story of storyList.stories) {
-    const $story = generateStoryMarkup(story);
-    $allStoriesList.append($story);
-  }
+	// loop through all of our stories and generate HTML for them
+	for (let story of storyList.stories) {
+		const $story = generateStoryMarkup(story);
+		$allStoriesList.append($story);
+	}
 
-  $allStoriesList.show();
+	$allStoriesList.show();
 }
+
+/** Gets new story from user submit form, generates their HTML, and puts on page. */
+
+async function submitNewStory(evt) {
+	console.debug('addUserStory');
+	evt.preventDefault();
+
+	// grab new story story data
+	const author = $('#create-author').val();
+	const title = $('#create-title').val();
+	const url = $('#create-url').val();
+	const userStory = { author, title, url };
+
+	// create new story
+	const story = await storyList.addStory(currentUser, userStory);
+
+	// push story to storyList object
+	storyList.stories.push(story);
+
+	// create html markup for story and prepend to story list UI
+	const $story = generateStoryMarkup(story);
+	$allStoriesList.prepend($story);
+
+	// hide the form and reset it
+	$submitStoryForm.slideUp('slow');
+	$submitStoryForm.trigger('reset');
+}
+
+$submitStoryForm.on('submit', submitNewStory);
