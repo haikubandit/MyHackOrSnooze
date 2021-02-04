@@ -142,6 +142,7 @@ async function submitNewStory(evt) {
 	// create html markup for story and prepend to story list UI
 	const $story = generateStoryMarkup(story);
 	$allStoriesList.prepend($story);
+	$userStories.prepend(generateStoryMarkup(story, true));
 
 	// hide the form and reset it
 	$submitStoryForm.slideUp('slow');
@@ -178,14 +179,24 @@ $storiesLists.on('click', '.favorite', toggleFavorite);
 
 async function deleteStory(evt) {
 	console.debug('deleteStory');
-	const $target = $(evt.target);
-	const $storyLi = $target.closest('li');
-	const storyId = $storyLi.attr('id');
-	console.log($target);
-	console.log(storyId);
-	await storyList.removeStory(currentUser, storyId);
+	const $storyId = $(evt.target).closest('li').attr('id');
 
-	await putUserStoriesOnPage();
+	// remove story from in memory story list
+	await storyList.removeStory(currentUser, $storyId);
+
+	// get user ownStory id to delete
+	const deletedStoryIdx = currentUser.ownStories.find((s, idx) => {
+		if (s.storyId === $storyId) return idx;
+	});
+
+	// remove story from currentUser ownStories array
+	currentUser.ownStories.splice(deletedStoryIdx, 1);
+
+	// re-generate story list
+	storyList = await StoryList.getStories();
+
+	// re-generate user stories
+	putUserStoriesOnPage();
 }
 
 $userStories.on('click', '.remove', deleteStory);
