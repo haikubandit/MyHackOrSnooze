@@ -43,3 +43,23 @@ function navSubmitStoryClick(evt) {
 }
 
 $navSubmitStory.on('click', navSubmitStoryClick);
+
+/** Show favorited stories list */
+
+function navFavoriteStories(evt) {
+	console.debug('navFavoriteStories', evt);
+	hidePageComponents();
+	putFavoriteStoriesOnPage();
+}
+
+$navFavorites.on('click', navFavoriteStories);
+
+/** Show my stories list */
+
+function myStoriesClick(evt) {
+	console.debug('navMyStories', evt);
+	hidePageComponents();
+	putUserStoriesOnPage();
+}
+
+$navMyStories.on('click', myStoriesClick);

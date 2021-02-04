@@ -23,8 +23,15 @@ function generateStoryMarkup(story) {
 	// console.debug("generateStoryMarkup", story);
 
 	const hostName = story.getHostName();
+
+	// only show favorite icon if user is logged in
+	const showLoggedInIcons = Boolean(currentUser);
+
+	// ${showLoggedInIcons ? generateRemoveIcon(currentUser, story) : ''}
 	return $(`
       <li id="${story.storyId}">
+        
+        ${showLoggedInIcons ? generateFavoriteIcon(currentUser, story) : ''}
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
@@ -33,6 +40,35 @@ function generateStoryMarkup(story) {
         <small class="story-user">posted by ${story.username}</small>
       </li>
     `);
+}
+
+/** Generate favorite icon html */
+
+function generateFavoriteIcon(user, story) {
+	// check if story is favorited
+	const isFavorite = user.isFavorite(story);
+	// update star with fontawesome class
+	const star = isFavorite ? 'fas' : 'far';
+
+	// return markup with star icon
+	return `
+    <span class="favorite">
+      <i class="${star} fa-star"></i>
+    </span>`;
+}
+
+/** Generate remove icon html */
+
+function generateRemoveIcon(user, story) {
+	// check if story is favorited
+	const isMyStory = user.isMyStory(story);
+
+	if (isMyStory)
+		// return trash icon
+		return `
+    <span class="remove">
+      <i class="fas fa-trash-alt"></i>
+    </span>`;
 }
 
 /** Gets list of stories from server, generates their HTML, and puts on page. */
@@ -49,6 +85,46 @@ function putStoriesOnPage() {
 	}
 
 	$allStoriesList.show();
+}
+
+/** Gets list of favorite stories from currentUser, generates their HTML, and puts on page. */
+
+function putFavoriteStoriesOnPage() {
+	console.debug('putFavoriteStoriesOnPage');
+
+	$favoriteStories.empty();
+
+	if (currentUser.favorites.length === 0) {
+		$favoriteStories.append('<h1>No Favorites added yet.</h1>');
+	} else {
+		// loop through currentUser favorited stories and generate HTML for them
+		for (let story of currentUser.favorites) {
+			const $story = generateStoryMarkup(story);
+			$favoriteStories.append($story);
+		}
+	}
+
+	$favoriteStories.show();
+}
+
+/** Gets list of currentUser's stories, generates their HTML, and puts on page. */
+
+function putUserStoriesOnPage() {
+	console.debug('putUserStoriesOnPage');
+
+	$userStories.empty();
+
+	if (currentUser.ownStories.length === 0) {
+		$userStories.append('<h1>No stories have been submitted.</h1>');
+	} else {
+		// loop through currentUser favorited stories and generate HTML for them
+		for (let story of currentUser.ownStories) {
+			const $story = generateStoryMarkup(story);
+			$userStories.append($story);
+		}
+	}
+
+	$userStories.show();
 }
 
 /** Gets new story from user submit form, generates their HTML, and puts on page. */
@@ -79,3 +155,27 @@ async function submitNewStory(evt) {
 }
 
 $submitStoryForm.on('submit', submitNewStory);
+
+/** Functionality for favorites list and starr/un-starr a story */
+
+async function toggleFavorite(evt) {
+	console.debug('toggleFavorite');
+	const $target = $(evt.target);
+	const $storyLi = $target.closest('li');
+	const storyId = $storyLi.attr('id');
+	const story = storyList.stories.find(s => s.storyId === storyId);
+
+	// check if story favorited by fontawesome star classes
+	if ($target.hasClass('fas')) {
+		// is currently a favorite
+		// remove favorite from user and toggle class to hollow star
+		await currentUser.removeFavorite(story);
+		$target.closest('i').toggleClass('fas far');
+	} else {
+		// add favorite from user and toggle class to solid star
+		await currentUser.addFavorite(story);
+		$target.closest('i').toggleClass('fas far');
+	}
+}
+
+$storiesLists.on('click', '.favorite', toggleFavorite);
