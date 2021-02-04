@@ -19,7 +19,7 @@ async function getAndShowStoriesOnStart() {
  * Returns the markup for the story.
  */
 
-function generateStoryMarkup(story) {
+function generateStoryMarkup(story, removeIcon = false) {
 	// console.debug("generateStoryMarkup", story);
 
 	const hostName = story.getHostName();
@@ -27,10 +27,9 @@ function generateStoryMarkup(story) {
 	// only show favorite icon if user is logged in
 	const showLoggedInIcons = Boolean(currentUser);
 
-	// ${showLoggedInIcons ? generateRemoveIcon(currentUser, story) : ''}
 	return $(`
-      <li id="${story.storyId}">
-        
+  <li id="${story.storyId}">
+	      ${removeIcon ? generateRemoveIcon() : ''}
         ${showLoggedInIcons ? generateFavoriteIcon(currentUser, story) : ''}
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
@@ -59,13 +58,8 @@ function generateFavoriteIcon(user, story) {
 
 /** Generate remove icon html */
 
-function generateRemoveIcon(user, story) {
-	// check if story is favorited
-	const isMyStory = user.isMyStory(story);
-
-	if (isMyStory)
-		// return trash icon
-		return `
+function generateRemoveIcon() {
+	return `
     <span class="remove">
       <i class="fas fa-trash-alt"></i>
     </span>`;
@@ -119,7 +113,7 @@ function putUserStoriesOnPage() {
 	} else {
 		// loop through currentUser favorited stories and generate HTML for them
 		for (let story of currentUser.ownStories) {
-			const $story = generateStoryMarkup(story);
+			const $story = generateStoryMarkup(story, true);
 			$userStories.append($story);
 		}
 	}
@@ -179,3 +173,19 @@ async function toggleFavorite(evt) {
 }
 
 $storiesLists.on('click', '.favorite', toggleFavorite);
+
+/** Functionality for removing user story */
+
+async function deleteStory(evt) {
+	console.debug('deleteStory');
+	const $target = $(evt.target);
+	const $storyLi = $target.closest('li');
+	const storyId = $storyLi.attr('id');
+	console.log($target);
+	console.log(storyId);
+	await storyList.removeStory(currentUser, storyId);
+
+	await putUserStoriesOnPage();
+}
+
+$userStories.on('click', '.remove', deleteStory);

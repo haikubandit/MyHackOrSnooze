@@ -19,6 +19,6 @@
 	color: gold;
 }
 
-.remove::hover {
+.remove:hover {
 	color: red;
 }
