@@ -184,7 +184,7 @@ async function deleteStory(evt) {
 	// remove story from in memory story list
 	await storyList.removeStory(currentUser, $storyId);
 
-	// get user ownStory id to delete
+	// get user ownStory id for removal
 	const deletedStoryIdx = currentUser.ownStories.find((s, idx) => {
 		if (s.storyId === $storyId) return idx;
 	});
