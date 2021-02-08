@@ -216,6 +216,23 @@ class User {
 		}
 	}
 
+	/** Update User Info   */
+
+	async updateUser() {
+		const token = this.loginToken;
+		const username = this.username;
+		const name = this.name;
+
+		const response = await axios({
+			token,
+			username: {
+				name
+			}
+		});
+
+		return response;
+	}
+
 	/** Add user favorite   */
 
 	async addFavorite(story) {

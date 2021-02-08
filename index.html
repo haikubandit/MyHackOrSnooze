@@ -100,6 +100,7 @@
     <div class="login-input">
       <label for="login-password">password</label>
       <input id="login-password" type="password" autocomplete="current-password">
+      <span id="invalid-password" class="hidden">Invalid Password</span>
     </div>
     <button type="submit">login</button>
     <hr>
@@ -124,26 +125,30 @@
       <label for="signup-password">password</label>
       <input id="signup-password" autocomplete="new-password" type="password">
     </div>
+    <div id="invalid-account" class="hidden">Username already exists. Choose a different one.</div>
     <button type="submit">create account</button>
   </form>
+</section>
 
-  <!-- Update User Profile form -->
-  <form action="#" id="update-user" class="account-form hidden" method="post">
-    <h4>User Profile</h4>
-    <div>
-      <b>Username: </b>
-    </div>
-    <div class="login-input">
-      <label for="login-username">username</label>
-      <input id="login-username" autocomplete="current-username">
-    </div>
-    <div class="login-input">
-      <label for="login-password">password</label>
-      <input id="login-password" type="password" autocomplete="current-password">
-    </div>
-    <button type="submit">login</button>
-    <hr>
-  </form>
+<!-- User Profile -->
+<section id="user-profile" class="hidden">
+  <div class="user-profile-container container">
+    <h4>User Profile Information</h4>
+    <section>
+      <div>
+        <b>Name:</b>
+        <span id="profile-name"></span>
+      </div>
+      <div>
+        <b>Username:</b>
+        <span id="profile-username"></span>
+      </div>
+      <div>
+        <b>Account Created:</b>
+        <span id="profile-created-date"></span>
+      </div>
+    </section>
+  </div>
 </section>
 
 <!-- Library JS & our JS -->

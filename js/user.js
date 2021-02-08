@@ -12,6 +12,7 @@ let currentUser;
 async function login(evt) {
 	console.debug('login', evt);
 	evt.preventDefault();
+	$('#invalid-password').hide();
 
 	// grab the username and password
 	const username = $('#login-username').val();
@@ -19,12 +20,16 @@ async function login(evt) {
 
 	// User.login retrieves user info from API and returns User instance
 	// which we'll make the globally-available, logged-in user.
-	currentUser = await User.login(username, password);
+	try {
+		currentUser = await User.login(username, password);
 
-	$loginForm.trigger('reset');
+		$loginForm.trigger('reset');
 
-	saveUserCredentialsInLocalStorage();
-	updateUIOnUserLogin();
+		saveUserCredentialsInLocalStorage();
+		updateUIOnUserLogin();
+	} catch (e) {
+		$('#invalid-password').show();
+	}
 }
 
 $loginForm.on('submit', login);
@@ -34,6 +39,7 @@ $loginForm.on('submit', login);
 async function signup(evt) {
 	console.debug('signup', evt);
 	evt.preventDefault();
+	$('#invalid-account').hide();
 
 	const name = $('#signup-name').val();
 	const username = $('#signup-username').val();
@@ -41,12 +47,16 @@ async function signup(evt) {
 
 	// User.signup retrieves user info from API and returns User instance
 	// which we'll make the globally-available, logged-in user.
-	currentUser = await User.signup(username, password, name);
+	try {
+		currentUser = await User.signup(username, password, name);
 
-	saveUserCredentialsInLocalStorage();
-	updateUIOnUserLogin();
+		saveUserCredentialsInLocalStorage();
+		updateUIOnUserLogin();
 
-	$signupForm.trigger('reset');
+		$signupForm.trigger('reset');
+	} catch (e) {
+		$('#invalid-account').show();
+	}
 }
 
 $signupForm.on('submit', signup);
@@ -115,6 +125,13 @@ function updateUIOnUserLogin() {
 	updateNavOnLogin();
 }
 
-function userProfile() {
+function generateUserProfile() {
 	console.debug('userProfile');
+	$userProfile.show();
+	const creationTimeIdx = currentUser.createdAt.indexOf('T');
+	const creationDate = currentUser.createdAt.slice(0, creationTimeIdx);
+
+	$('#profile-name').text(currentUser.name);
+	$('#profile-username').text(currentUser.username);
+	$('#profile-created-date').text(creationDate);
 }

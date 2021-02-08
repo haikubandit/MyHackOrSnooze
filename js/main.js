@@ -8,6 +8,7 @@ const $storiesLoadingMsg = $('#stories-loading-msg');
 const $allStoriesList = $('#all-stories-list');
 const $favoriteStories = $('#favorite-stories');
 const $userStories = $('#user-stories');
+const $userProfile = $('#user-profile');
 
 // select all elements with .story-list in UI
 const $storiesLists = $('.stories-list');
@@ -35,7 +36,8 @@ function hidePageComponents() {
 		$signupForm,
 		$submitStoryForm,
 		$favoriteStories,
-		$userStories
+		$userStories,
+		$userProfile
 	];
 	components.forEach(c => c.hide());
 }

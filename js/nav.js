@@ -67,8 +67,9 @@ $navMyStories.on('click', myStoriesClick);
 /** Click on logged in username to view profile */
 
 function navUserProfile() {
-	console.debug('userProfile');
+	console.debug('navUserProfile');
 	hidePageComponents();
+	generateUserProfile();
 }
 
 $navUserProfile.on('click', navUserProfile);
