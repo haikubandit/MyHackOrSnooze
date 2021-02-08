@@ -218,15 +218,18 @@ class User {
 
 	/** Update User Info   */
 
-	async updateUser() {
+	async updateUser(newName, newPassword) {
 		const token = this.loginToken;
 		const username = this.username;
-		const name = this.name;
+		// const name = this.name;
+		const user = currentUser;
 
 		const response = await axios({
-			token,
-			username: {
-				name
+			url: `${BASE_URL}/users/${username}`,
+			method: 'PATCH',
+			data: {
+				token,
+				user: { name: newName, password: newPassword }
 			}
 		});
 

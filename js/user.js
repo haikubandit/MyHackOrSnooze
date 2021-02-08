@@ -128,6 +128,8 @@ function updateUIOnUserLogin() {
 function generateUserProfile() {
 	console.debug('userProfile');
 	$userProfile.show();
+
+	//should move these into another function...
 	const creationTimeIdx = currentUser.createdAt.indexOf('T');
 	const creationDate = currentUser.createdAt.slice(0, creationTimeIdx);
 
