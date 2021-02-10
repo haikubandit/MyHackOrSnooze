@@ -24,7 +24,7 @@ class Story {
 
 	getHostName() {
 		// UNIMPLEMENTED: complete this function!
-		return 'hostname.com';
+		return new URL(this.url).hostname;
 	}
 }
 
@@ -103,6 +103,17 @@ class StoryList {
 			method: 'DELETE',
 			data: { token }
 		});
+
+		currentUser.ownStories.filter(story => story.storyId !== storyId);
+
+		this.stories.filter(story => story.storyId !== storyId);
+		// // get user ownStory id for removal
+		// const deletedStoryIdx = currentUser.ownStories.find((s, idx) => {
+		// 	if (s.storyId === $storyId) return idx;
+		// });
+
+		// // remove story from currentUser ownStories array
+		// currentUser.ownStories.splice(deletedStoryIdx, 1);
 
 		return response;
 	}
@@ -222,7 +233,7 @@ class User {
 		const token = this.loginToken;
 		const username = this.username;
 		// const name = this.name;
-		const user = currentUser;
+		// const user = currentUser;
 
 		const response = await axios({
 			url: `${BASE_URL}/users/${username}`,

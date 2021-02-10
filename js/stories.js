@@ -179,24 +179,23 @@ $storiesLists.on('click', '.favorite', toggleFavorite);
 
 async function deleteStory(evt) {
 	console.debug('deleteStory');
+	const $story = $(evt.target).closest('li');
 	const $storyId = $(evt.target).closest('li').attr('id');
 
 	// remove story from in memory story list
 	await storyList.removeStory(currentUser, $storyId);
 
-	// get user ownStory id for removal
-	const deletedStoryIdx = currentUser.ownStories.find((s, idx) => {
-		if (s.storyId === $storyId) return idx;
-	});
-
-	// remove story from currentUser ownStories array
-	currentUser.ownStories.splice(deletedStoryIdx, 1);
-
-	// re-generate story list
-	storyList = await StoryList.getStories();
+	// // re-generate story list
+	// storyList = await StoryList.getStories();
 
 	// re-generate user stories
-	putUserStoriesOnPage();
+	// putUserStoriesOnPage();
+	$story.remove();
 }
 
 $userStories.on('click', '.remove', deleteStory);
+
+/** Remove story from local data structure */
+function removeStoryFromLocalDataStructure(story) {
+	currentUser.ownStories.filter(s => s.storyId !== story.storyId);
+}

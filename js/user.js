@@ -137,3 +137,8 @@ function generateUserProfile() {
 	$('#profile-username').text(currentUser.username);
 	$('#profile-created-date').text(creationDate);
 }
+
+/** Handle click of for user profile updates
+ *
+ * Functions for updating user name and password
+ */
